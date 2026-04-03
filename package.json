@@ -1,0 +1,13 @@
+{
+  "name": "ml-roadmap-365-daily",
+  "version": "1.0.0",
+  "description": "365-day ML Engineer roadmap",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["ml", "roadmap", "learning"],
+  "author": "",
+  "license": "ISC"
+}
