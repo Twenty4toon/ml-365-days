@@ -501,17 +501,10 @@ function App() {
     src: '/ml-engineer-roadmap-365/18475-34717-shake-it-duo.riv',
     stateMachines: 'State Machine 1',
     autoplay: true,
-    onLoadError: (error) => console.error('Rive load error:', error),
   });
 
-  const onHoverInput = useStateMachineInput(rive, 'State Machine 1', 'Hover');
-  const onPressInput = useStateMachineInput(rive, 'State Machine 1', 'Press');
-
-  useEffect(() => {
-    if (rive) {
-      console.log('Rive loaded successfully:', rive);
-    }
-  }, [rive]);
+  const onHoverInput = useStateMachineInput(rive && rive.stateMachineInputs, 'State Machine 1', 'Hover');
+  const onPressInput = useStateMachineInput(rive && rive.stateMachineInputs, 'State Machine 1', 'Press');
 
   const handleMouseEnter = () => {
     if (onHoverInput) onHoverInput.value = true;
