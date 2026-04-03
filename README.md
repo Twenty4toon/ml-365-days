@@ -1,33 +1,38 @@
-# ML Engineer - 365 Days Roadmap
+# 365-Day ML Engineer Roadmap 🚀
 
 A self-paced roadmap to become an ML Engineer in 365 days. From Python basics to deploying production AI products.
 
+## Live Demo
+
+🔗 **https://twenty4toon.github.io/ml-roadmap-365/**
+
 ## Quick Start
 
-### Local (Node.js server)
+### Local Development
 ```bash
+cd ml-roadmap-app
 npm install
-node server.js
+npm run dev
 ```
-Visit `http://localhost:3000`
+Visit `http://localhost:5173`
 
-### Static (GitHub Pages)
-1. Create a new repo on GitHub
-2. Push these files:
-   - `index.html` (frontend)
-   - `README.md`
-3. Go to **Settings → Pages**
-4. Set Source to **main branch**
-5. Your site will be live at `https://yourusername.github.io/repo-name/`
+### Build for Production
+```bash
+cd ml-roadmap-app
+npm run build
+npm run preview
+```
 
 ## Project Structure
 
 ```
 ml-roadmap-365-daily/
-├── index.html      # Static frontend (works on GitHub Pages)
-├── server.js       # Node.js API server (for dynamic backend)
-├── package.json    # Node.js config
-└── README.md       # This file
+├── ml-roadmap-app/       # React + Vite app
+│   ├── src/              # Source code
+│   ├── public/           # Static assets
+│   ├── index.html        # Entry point
+│   └── package.json      # Dependencies
+└── README.md             # This file
 ```
 
 ## Roadmap Overview
@@ -55,18 +60,10 @@ ml-roadmap-365-daily/
 - **LLMs Fine-tuned:** Mistral + Llama 3
 - **Career Title:** ML / AI Engineer
 
-## Customization
-
-Edit `index.html` to change:
-- Start date (search for `2026-04-03`)
-- Phase titles and colors
-- Daily schedule times
-
 ## Tech Stack
 
-- **Frontend:** Vanilla HTML/CSS/JS (no build needed)
-- **Backend:** Node.js with native http module
-- **Deployment:** GitHub Pages (static) or any Node.js host
+- **Frontend:** React + Vite
+- **Deployment:** GitHub Pages (via GitHub Actions)
 
 ## License
 
