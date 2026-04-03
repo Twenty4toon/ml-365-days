@@ -498,13 +498,13 @@ function App() {
   const toggleDay = (d) => setExpandedDay(prev => prev === d ? null : d);
 
   const { rive, RiveComponent } = useRive({
-    src: '/ml-engineer-roadmap-365/18475-34717-shake-it-duo.riv',
+    src: '/18475-34717-shake-it-duo.riv',
     stateMachines: 'State Machine 1',
     autoplay: true,
   });
 
-  const onHoverInput = useStateMachineInput(rive && rive.stateMachineInputs, 'State Machine 1', 'Hover');
-  const onPressInput = useStateMachineInput(rive && rive.stateMachineInputs, 'State Machine 1', 'Press');
+  const onHoverInput = useStateMachineInput(rive, 'State Machine 1', 'Hover');
+  const onPressInput = useStateMachineInput(rive, 'State Machine 1', 'Press');
 
   const handleMouseEnter = () => {
     if (onHoverInput) onHoverInput.value = true;
