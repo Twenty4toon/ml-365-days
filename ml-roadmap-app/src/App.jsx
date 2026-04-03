@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { useRive, useStateMachineInput } from 'rive-react'
 
@@ -501,10 +501,17 @@ function App() {
     src: '/ml-engineer-roadmap-365/18475-34717-shake-it-duo.riv',
     stateMachines: 'State Machine 1',
     autoplay: true,
+    onLoadError: (error) => console.error('Rive load error:', error),
   });
 
   const onHoverInput = useStateMachineInput(rive, 'State Machine 1', 'Hover');
   const onPressInput = useStateMachineInput(rive, 'State Machine 1', 'Press');
+
+  useEffect(() => {
+    if (rive) {
+      console.log('Rive loaded successfully:', rive);
+    }
+  }, [rive]);
 
   const handleMouseEnter = () => {
     if (onHoverInput) onHoverInput.value = true;
