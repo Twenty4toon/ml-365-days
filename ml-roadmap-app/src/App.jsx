@@ -498,7 +498,7 @@ function App() {
   const toggleDay = (d) => setExpandedDay(prev => prev === d ? null : d);
 
   const { rive, RiveComponent } = useRive({
-    src: '/18475-34717-shake-it-duo.riv',
+    src: '/ml-engineer-roadmap-365/18475-34717-shake-it-duo.riv',
     stateMachines: 'State Machine 1',
     autoplay: true,
   });
