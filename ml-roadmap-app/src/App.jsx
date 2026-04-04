@@ -493,7 +493,7 @@ function App() {
   const start = new Date("2026-04-03");
   const today = new Date();
   const currentDayNum = Math.max(1, Math.floor((today - start) / 86400000) + 1);
-  const dayNum = completedDays.length > 0 ? Math.max(...completedDays) + 1 : currentDayNum;
+  const dayNum = completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
 
   const toggleDay = (d) => setExpandedDay(prev => prev === d ? null : d);
 
