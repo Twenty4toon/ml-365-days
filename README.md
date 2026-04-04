@@ -4,7 +4,7 @@ A self-paced roadmap to become an ML Engineer in 365 days. From Python basics to
 
 ## Live Demo
 
-🔗 **https://twenty4toon.github.io/ml-roadmap-365/**
+🔗 **https://twenty4toon.github.io/ml-365-days/**
 
 ## Quick Start
 
