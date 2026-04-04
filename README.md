@@ -1,4 +1,4 @@
-# 365-Day ML Engineer Roadmap 🚀
+# 365-Day ML Engineer Roadmap
 
 A self-paced roadmap to become an ML Engineer in 365 days. From Python basics to deploying production AI products.
 
@@ -65,6 +65,3 @@ ml-roadmap-365-daily/
 - **Frontend:** React + Vite
 - **Deployment:** GitHub Pages (via GitHub Actions)
 
-## License
-
-MIT
