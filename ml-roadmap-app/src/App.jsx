@@ -457,13 +457,17 @@ function App() {
   const bgMusicRef = useRef(null);
   const slapSoundRef = useRef(null);
 
+  const [isPlaying, setIsPlaying] = useState(false);
+
   useEffect(() => {
     bgMusicRef.current = new Audio(import.meta.env.BASE_URL + 'Play music.mp3');
     bgMusicRef.current.loop = true;
     slapSoundRef.current = new Audio(import.meta.env.BASE_URL + 'slap.mp3');
 
     const handleFirstInteraction = () => {
-      bgMusicRef.current?.play().catch(() => {});
+      bgMusicRef.current?.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {});
       document.removeEventListener('click', handleFirstInteraction);
       document.removeEventListener('keydown', handleFirstInteraction);
       document.removeEventListener('touchstart', handleFirstInteraction);
@@ -472,8 +476,6 @@ function App() {
     document.addEventListener('click', handleFirstInteraction);
     document.addEventListener('keydown', handleFirstInteraction);
     document.addEventListener('touchstart', handleFirstInteraction, { passive: true });
-
-    bgMusicRef.current.play().catch(() => {});
 
     return () => {
       document.removeEventListener('click', handleFirstInteraction);
@@ -485,12 +487,14 @@ function App() {
     };
   }, []);
 
-  const [isMuted, setIsMuted] = useState(false);
-
   useEffect(() => {
-    if (bgMusicRef.current) bgMusicRef.current.muted = isMuted;
-    if (slapSoundRef.current) slapSoundRef.current.muted = isMuted;
-  }, [isMuted]);
+    if (!bgMusicRef.current) return;
+    if (isPlaying) {
+      bgMusicRef.current.play().catch(() => setIsPlaying(false));
+    } else {
+      bgMusicRef.current.pause();
+    }
+  }, [isPlaying]);
 
   const [activePhase, setActivePhase] = useState(() => {
     const saved = localStorage.getItem('activePhase');
@@ -564,36 +568,36 @@ function App() {
   return (
     <div style={{fontFamily:"system-ui, -apple-system, sans-serif", color:"#1a1a1a", maxWidth:640, margin:"0 auto", padding:"0.75rem 0.5", boxSizing:"border-box", width:"100%"}}>
       <button 
-        onClick={() => setIsMuted(prev => !prev)}
+        onClick={() => setIsPlaying(prev => !prev)}
         style={{
           position: "fixed", 
-          top: "16px", 
-          right: "16px", 
-          background: "#fff", 
-          border: "1px solid #e5e5e5", 
-          borderRadius: "50%", 
-          width: "40px", 
-          height: "40px", 
+          top: "12px", 
+          right: "12px", 
+          background: "rgba(255, 255, 255, 0.9)", 
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(0,0,0,0.08)", 
+          borderRadius: "12px", 
+          width: "36px", 
+          height: "36px", 
+          padding: 0,
           display: "flex", 
           alignItems: "center", 
           justifyContent: "center", 
           cursor: "pointer", 
           zIndex: 100,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+          boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+          transition: "all 0.2s ease"
         }}
-        aria-label={isMuted ? "Unmute" : "Mute"}
+        aria-label={isPlaying ? "Pause Music" : "Play Music"}
       >
-        {isMuted ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="1" y1="1" x2="23" y2="23"></line>
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <line x1="23" y1="9" x2="17" y2="15"></line>
-            <line x1="17" y1="9" x2="23" y2="15"></line>
+        {isPlaying ? (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{color: phase.color}}>
+            <rect x="6" y="4" width="4" height="16" rx="1" />
+            <rect x="14" y="4" width="4" height="16" rx="1" />
           </svg>
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{color: phase.color, marginLeft: 2}}>
+            <path d="M5 3.867v16.266c0 .903 1.05 1.411 1.773.876l11-8.133a1.092 1.092 0 000-1.752l-11-8.133C6.05 2.456 5 2.964 5 3.867z" />
           </svg>
         )}
       </button>
