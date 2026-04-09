@@ -466,16 +466,19 @@ function App() {
       bgMusicRef.current?.play().catch(() => {});
       document.removeEventListener('click', handleFirstInteraction);
       document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
     };
 
     document.addEventListener('click', handleFirstInteraction);
     document.addEventListener('keydown', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction, { passive: true });
 
     bgMusicRef.current.play().catch(() => {});
 
     return () => {
       document.removeEventListener('click', handleFirstInteraction);
       document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
       if (bgMusicRef.current) {
         bgMusicRef.current.pause();
       }
