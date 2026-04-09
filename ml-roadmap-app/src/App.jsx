@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import { useRive, useStateMachineInput } from 'rive-react'
 
@@ -454,6 +454,41 @@ const schedule = [
 ];
 
 function App() {
+  const bgMusicRef = useRef(null);
+  const slapSoundRef = useRef(null);
+
+  useEffect(() => {
+    bgMusicRef.current = new Audio(import.meta.env.BASE_URL + 'Play music.mp3');
+    bgMusicRef.current.loop = true;
+    slapSoundRef.current = new Audio(import.meta.env.BASE_URL + 'slap.mp3');
+
+    const handleFirstInteraction = () => {
+      bgMusicRef.current?.play().catch(() => {});
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+
+    bgMusicRef.current.play().catch(() => {});
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      if (bgMusicRef.current) {
+        bgMusicRef.current.pause();
+      }
+    };
+  }, []);
+
+  const [isMuted, setIsMuted] = useState(false);
+
+  useEffect(() => {
+    if (bgMusicRef.current) bgMusicRef.current.muted = isMuted;
+    if (slapSoundRef.current) slapSoundRef.current.muted = isMuted;
+  }, [isMuted]);
+
   const [activePhase, setActivePhase] = useState(() => {
     const saved = localStorage.getItem('activePhase');
     return saved ? parseInt(saved) : 1;
@@ -514,6 +549,10 @@ function App() {
   };
   const handlePress = () => {
     if (onPressInput) onPressInput.value = true;
+    if (slapSoundRef.current) {
+      slapSoundRef.current.currentTime = 0;
+      slapSoundRef.current.play().catch(() => {});
+    }
   };
   const handleRelease = () => {
     if (onPressInput) onPressInput.value = false;
@@ -521,9 +560,43 @@ function App() {
 
   return (
     <div style={{fontFamily:"system-ui, -apple-system, sans-serif", color:"#1a1a1a", maxWidth:640, margin:"0 auto", padding:"0.75rem 0.5", boxSizing:"border-box", width:"100%"}}>
+      <button 
+        onClick={() => setIsMuted(prev => !prev)}
+        style={{
+          position: "fixed", 
+          top: "16px", 
+          right: "16px", 
+          background: "#fff", 
+          border: "1px solid #e5e5e5", 
+          borderRadius: "50%", 
+          width: "40px", 
+          height: "40px", 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          cursor: "pointer", 
+          zIndex: 100,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+        }}
+        aria-label={isMuted ? "Unmute" : "Mute"}
+      >
+        {isMuted ? (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        )}
+      </button>
 
       <div style={{marginBottom:"1rem"}}>
-        <div style={{width:180, height:180, margin:"0 auto 16px"}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onMouseDown={handlePress} onMouseUp={handleRelease}>
+        <div style={{width:180, height:180, margin:"0 auto 16px"}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onMouseDown={handlePress} onMouseUp={handleRelease} onTouchStart={(e) => { e.preventDefault(); handlePress(); }} onTouchEnd={(e) => { e.preventDefault(); handleRelease(); }} onTouchCancel={handleRelease}>
           <RiveComponent />
         </div>
         <h1 style={{fontSize:22, fontWeight:600, margin:0, color:"#1a1a1a", textAlign:"center"}}>ML Engineer</h1>
@@ -579,7 +652,7 @@ function App() {
                       return (
                         <div key={day.d} className="day-item" style={{borderBottom: i < week.days_data.length-1 ? "0.5px solid #eee" : "none"}}>
                           <div style={{width:"100%", padding:"10px 14px", display:"flex", alignItems:"center", gap:10, background:isToday?phase.color+"15":isDayOpen?"#f8f8f8":"transparent", cursor:"pointer", transition:"background 0.15s ease"}}>
-                            <div onClick={()=>toggleDayComplete(day.d)} className="checkbox" style={{width:20, height:20, borderRadius:"50%", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, fontWeight:600, background: isCompleted ? phase.color : isPast ? "#ddd" : "transparent", border: isCompleted ? "none" : "2px solid #ccc", color: isCompleted || isPast ? "#fff" : "#999", cursor:"pointer", transition:"all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", boxShadow: isCompleted ? `0 2px 8px ${phase.color}40` : "none"}}>
+                            <div onClick={()=>toggleDayComplete(day.d)} className="checkbox" style={{width:20, height:20, borderRadius:"50%", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, fontWeight:600, background: isCompleted ? phase.color : "transparent", border: isCompleted ? "none" : "2px solid #ccc", color: isCompleted ? "#fff" : "#999", cursor:"pointer", transition:"all 0.25s cubic-bezier(0.4, 0, 0.2, 1)", boxShadow: isCompleted ? `0 2px 8px ${phase.color}40` : "none"}}>
                               {day.d}
                             </div>
                             <button onClick={()=>toggleDay(key)} style={{flex:1, minWidth:0, display:"flex", alignItems:"center", justifyContent:"space-between", background:"transparent", border:"none", cursor:"pointer", textAlign:"left", padding:0}}>
